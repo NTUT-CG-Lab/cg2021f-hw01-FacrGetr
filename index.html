@@ -7,6 +7,11 @@
 		<link type="text/css" rel="stylesheet" href="main.css">
 	</head>
 	<body>
+
+		<div style="position:absolute;z-index:999" id="self-score">
+			
+		</div>
+
 		<div id="info">
 			<a href="https://threejs.org" target="_blank" rel="noopener">
 		</div>
@@ -20,19 +25,22 @@
 		</script>
 
 		<script>
-
 			let container;
 			let camera, cameraTarget, scene, renderer;
 			let group, textMesh1, textMesh2, textGeo, material;
 			let firstLetter = true;
 
-			let text = 'THREE';
+			let text = 'test';
+			
 			const height = 20,
-				size = 70,
-				hover = 30,
-				curveSegments = 4,
+				size = 50,
+				hover = 100,
+				curveSegments = 10,
 				bevelThickness = 2,
-				bevelSize = 1.5;
+				bevelSize = 1.5,
+				radius = 150,
+				x_fix = -30,
+				y_fix = 200;
 
 			let font = null;
 			const mirror = true;
@@ -50,7 +58,7 @@
 
 			function init() {
 				
-				var fontttf = 'fonts/test.ttf';
+				var fontttf = './fonts/setofont.ttf';
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
@@ -91,7 +99,19 @@
 				loader.load( fontttf, function ( json ) {
 					console.log(json)
 					font = new THREE.Font( json );
-					createText();
+					
+					createText("子", getSin(0), getCos(0) );
+					createText("丑", getSin(1), getCos(1) );
+					createText("寅", getSin(2), getCos(2) );
+					createText("卯", getSin(3), getCos(3) );
+					createText("辰", getSin(4), getCos(4) );
+					createText("巳", getSin(5), getCos(5) );
+					createText("午", getSin(6), getCos(6) );
+					createText("未", getSin(7), getCos(7) );
+					createText("申", getSin(8), getCos(8) );
+					createText("酉", getSin(9), getCos(9) );
+					createText("戌", getSin(10), getCos(10) );
+					createText("亥", getSin(11), getCos(11) );
 
 				} );
 
@@ -120,6 +140,16 @@
 
 				window.addEventListener( 'resize', onWindowResize );
 
+			}
+
+			function getCos(_n) {
+				var theta = (_n / 12) * Math.PI * 2;
+				return y_fix + Math.cos(theta) * radius;
+			}
+
+			function getSin(_n) {
+				var theta = (_n / 12) * Math.PI * 2;
+				return x_fix + Math.sin(theta) * radius;
 			}
 
 			function onWindowResize() {
@@ -180,9 +210,9 @@
 
 			}
 
-			function createText() {
-
-				textGeo = new THREE.TextGeometry( text, {
+			function createText( _str, _x, _y ) {
+				
+				textGeo = new THREE.TextGeometry( _str, {
 
 					font: font,
 
@@ -203,8 +233,8 @@
 
 				textMesh1 = new THREE.Mesh( textGeo, material );
 
-				textMesh1.position.x = centerOffset;
-				textMesh1.position.y = hover;
+				textMesh1.position.x = _x;
+				textMesh1.position.y = _y;
 				textMesh1.position.z = 0;
 
 				textMesh1.rotation.x = 0;
@@ -216,8 +246,8 @@
 
 					textMesh2 = new THREE.Mesh( textGeo, material );
 
-					textMesh2.position.x = centerOffset;
-					textMesh2.position.y = - hover;
+					textMesh2.position.x = _x;
+					textMesh2.position.y = - _y;
 					textMesh2.position.z = height;
 
 					textMesh2.rotation.x = Math.PI;
@@ -236,7 +266,7 @@
 
 				if ( ! text ) return;
 
-				createText();
+				createText(text, 0 ,hover);
 
 			}
 
@@ -305,8 +335,8 @@
 				//有幾個項目就呼叫幾個 addChild
 				//addChild 要比 renderModal 先呼叫
 				so.addChild("創建場景", 2, true);
-				so.addChild("讀取字形檔", 2, false);
-				so.addChild("將地支以圓圈排列", 2, false);
+				so.addChild("讀取字形檔", 2, true);
+				so.addChild("將地支以圓圈排列", 2, true);
 				so.addChild("滑鼠點擊地支分別跳網頁", 1, false);
 				so.addChild("顯示\"高等計算機圖形作業\"", 1, false);
 				so.addChild("時鐘效果", 1, false);
@@ -334,7 +364,7 @@
 				//產生 "開啟自評表按鈕"
 				so.renderBtn(
 					//自評表按鈕插入位置
-					document.body,
+					document.getElementById('self-score'),
 					//自評表按鈕文字
 					"開啟自評表"
 				);
